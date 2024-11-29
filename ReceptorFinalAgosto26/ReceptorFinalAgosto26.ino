@@ -9,9 +9,9 @@
 #include <ThingsBoard.h>
 #include <Arduino_MQTT_Client.h>
 
-const char* ssid = "Adelmo";
-const char* password = "29072001tr";
-const char* serverName = "http://192.168.1.8/Irrigacao_Autonoma/insertDadosSensor";  // Endereço do script PHP no XAMPP
+const char* ssid = "motog825G_9325";
+const char* password = "thiago29";
+const char* serverName = "http://192.168.145.56/Irrigacao_Autonoma/insertDadosSensor";  // Endereço do script PHP no XAMPP
 
 #define SCK_LORA 5
 #define MISO_LORA 19
@@ -39,7 +39,7 @@ const char* serverName = "http://192.168.1.8/Irrigacao_Autonoma/insertDadosSenso
 
 /*ThingsBoard*/
 #define TB_SERVER "thingsboard.cloud"
-#define TOKEN "quRFAjtZ7GA0TVwLYd3J"
+#define TOKEN "GfRkiJw4BEHyWQa1d47q"
 
 constexpr uint16_t MAX_MESSAGE_SIZE = 128U;
 
@@ -59,11 +59,18 @@ void connectToThingsBoard() {
   }
 }
 
+#include <ArduinoJson.h>
+
 void sendDataToThingsBoard(float temp, float hum, float solo) {
-  String jsonData = "{\"temperature\":" + String(temp) + ", \"humidity\":" + String(hum) + ", \"solo\":" + String(solo) +"}";
-  tb.sendTelemetryJson(jsonData.c_str());
+  StaticJsonDocument<200> jsonDoc;
+  jsonDoc["temperature"] = temp;
+  jsonDoc["humidity"] = hum;
+  jsonDoc["solo"] = solo;
+
+  tb.sendTelemetryJson(jsonDoc, measureJson(jsonDoc));
   Serial.println("Data sent");
 }
+
 /*ThingsBoard*/
 
 /*Variaveis e objetos globais*/
